@@ -4,23 +4,17 @@ import torch
 from torch.utils.data import DataLoader, Dataset
 import torch.nn as nn
 import torch.nn.functional as F
-from tokenizers import ByteLevelBPETokenizer
+from tokenizers import ByteLevelBPETokenizer #тут должна быть ошибка / error must be here
 
 
 tokenizer = ByteLevelBPETokenizer(
     "tokenizer/vocab.json",
     "tokenizer/merges.txt"
 )
-
-
 eos_token_id = tokenizer.token_to_id("")
-if eos_token_id is None:
-    print("Внимание: токен '' не найден в словаре токенизатора. Добавьте его при обучении токенизатора.")
-else:
-    print(f"EOS token id: {eos_token_id}")
 
 
-class SimpleGPT(nn.Module):
+class MaxGPT(nn.Module):
     def __init__(self, vocab_size, embed_dim, num_heads, num_layers, max_seq_len):
         super().__init__()
         self.token_embedding = nn.Embedding(vocab_size, embed_dim)
@@ -70,16 +64,16 @@ with open("txt.txt", "r", encoding="utf-8") as f:
     raw_text = f.read()
 
 tokenized_text = tokenizer.encode(raw_text).ids
-print(f"Длина токенизированного текста: {len(tokenized_text)}")
+print(f"Tokenized text size : {len(tokenized_text)}")
 
 
 dataset = TextDataset(tokenized_text, seq_len, eos_token_id=eos_token_id)
 dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-print(f"Используется устройство: {device}")
+print(f"Using device: {device}")
 
-model = SimpleGPT(
+model = MaxGPT(
     vocab_size=tokenizer.get_vocab_size(),
     embed_dim=embed_dim,
     num_heads=num_heads,
@@ -90,8 +84,8 @@ model = SimpleGPT(
 optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 loss_fn = nn.CrossEntropyLoss()
 
-print("Начинаем обучение")
-print(f"Общее число батчей: {len(dataloader)}")
+print("learn start")
+print(f"batch count: {len(dataloader)}")
 
 model.train()
 for epoch in range(num_epochs):
@@ -116,59 +110,7 @@ for epoch in range(num_epochs):
             print(f"Epoch {epoch + 1}, Batch {batch_idx}, Loss: {loss.item():.4f}")
 
     avg_loss = total_loss / len(dataloader)
-    print(f"Epoch {epoch + 1} завершена, средний Loss: {avg_loss:.4f}")
+    print(f"Epoch {epoch + 1} end, avg loss: {avg_loss:.4f}")
 
 
-def sample_next_token(logits, temperature=1.0, top_k=50):
-    logits = logits / temperature
-    top_k_logits, top_k_indices = torch.topk(logits, top_k)
-    probs = F.softmax(top_k_logits, dim=-1)
-    next_token = torch.multinomial(probs, num_samples=1)
-    return top_k_indices[next_token].item()
-
-def toTokens(text):
-    encoding = tokenizer.encode(text)
-    return encoding.ids
-
-def fromTokens(ids):
-    return tokenizer.decode(ids)
-
-
-def chat_with_model(model, initial_text, max_response_tokens=50, temperature=1.0, top_k=50, device='cpu'):
-    model.eval()
-    input_tokens_list = toTokens(initial_text)
-    input_tensor = torch.tensor(input_tokens_list, dtype=torch.long).unsqueeze(0).to(device)
-
-    for _ in range(max_response_tokens):
-        if input_tensor.size(1) > model.max_seq_len:
-            input_tensor = input_tensor[:, -model.max_seq_len:]
-
-        with torch.no_grad():
-            logits = model(input_tensor)
-
-        if logits.shape[1] == 0:
-            print("Логиты пусты! Проверьте входные данные.")
-            break
-
-        last_logits = logits[:, -1, :].squeeze(0)
-
-        predicted_token_id = sample_next_token(last_logits, temperature=temperature, top_k=top_k)
-
-        if eos_token_id is not None and predicted_token_id == eos_token_id:
-            break
-
-        input_tensor = torch.cat([input_tensor, torch.tensor([[predicted_token_id]], device=device)], dim=1)
-
-    generated_tokens = input_tensor.squeeze(0).tolist()
-    generated_text = fromTokens(generated_tokens)
-
-    return generated_text
-
-# Основной цикл взаимодействия с пользователем
-print("Введите 'exit' для выхода")
-while True:
-    userText = input("Вы: ")
-    if userText.strip().lower() == "exit":
-        break
-    response = chat_with_model(model, userText, max_response_tokens=500, temperature=0.5, top_k=50)
-    print("Модель:", response)
+torch.save(model, "model.pth")
