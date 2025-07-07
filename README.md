@@ -35,3 +35,8 @@ A project for training and chatting with a neural network based on PyTorch.
 
    `python main.py`
 
+6. Now you can chat with the model:
+   
+  `python chat.py`
+
+# With current dataset it can only speak russian
