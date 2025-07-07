@@ -32,9 +32,9 @@ def remove_empty_lines_in_range(input_file, output_file, start_line, end_line):
     print(f'Удалено {len(lines) - len(new_lines)} пустых строк в диапазоне с {start_line} по {end_line}.')
 
 
-input_path = 'txt.txt'           # исходный файл
-intermediate_path = 'txt.txt'  # промежуточный файл после удаления цифр
-output_path = 'txt.txt'         # итоговый файл после удаления пустых строк в диапазоне
+input_path = 'dataset.txt'  # исходный файл
+intermediate_path = 'dataset.txt'  # промежуточный файл после удаления цифр
+output_path = 'dataset.txt'  # итоговый файл после удаления пустых строк в диапазоне
 
 # Удаляем строки с цифрами
 remove_lines_with_only_numerals(input_path, intermediate_path)

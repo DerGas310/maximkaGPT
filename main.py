@@ -60,7 +60,7 @@ num_layers = 6
 num_epochs = 5
 learning_rate = 1e-4
 
-with open("txt.txt", "r", encoding="utf-8") as f:
+with open("dataset.txt", "r", encoding="utf-8") as f:
     raw_text = f.read()
 
 tokenized_text = tokenizer.encode(raw_text).ids
