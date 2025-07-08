@@ -1,6 +1,6 @@
 # maximkaGPT
 
-A project for training and chatting with a neural network based on PyTorch.
+A project for training and chatting with maximkaGPT based on PyTorch.
 
 # Requirements
 
@@ -17,7 +17,7 @@ A project for training and chatting with a neural network based on PyTorch.
   Used to interact with saved neural network.
 
 - `clear.py`  
-  Cleans the `dataset.txt` file by removing numbers and empty lines. The `datast.txt` file contains dataset of poems.
+  Cleans the `dataset.txt` file by removing numbers and empty lines. The `dataset.txt` file contains dataset for training GPT.
 
 - `txttokenizer.py`  
   Tokenizer script. **Do not modify this file.**
@@ -30,13 +30,11 @@ A project for training and chatting with a neural network based on PyTorch.
    `pip install torch tokenizers`
 
 3. If you need, change `dataset.txt`.
-4. Then run `clear.py` to preparr the dataset. 
-5. Train the model to start chatting:
 
-   `python main.py`
+4. Then run `clear.py` to prepare the dataset. 
 
-6. Now you can chat with the model:
-   
-   `python chat.py`
+5. Train the model in `main.py` to start chatting
+
+6. Now you can chat with the model in `chat.py`
 
 P.S: it speaks only Russian

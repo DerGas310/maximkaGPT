@@ -1,20 +1,24 @@
-# -*- coding: utf-8 -*-
-
 import torch
-from torch.utils.data import DataLoader, Dataset
-import torch.nn as nn
 import torch.nn.functional as F
 from tokenizers import ByteLevelBPETokenizer
+from main import MaximkaGPT
 
+tokenizer = ByteLevelBPETokenizer("tokenizer/vocab.json", "tokenizer/merges.txt")
+eos_token = "/"
+eos_token_id = tokenizer.token_to_id(eos_token)
 
-tokenizer = ByteLevelBPETokenizer(
-    "tokenizer/vocab.json",
-    "tokenizer/merges.txt"
-)
-eos_token_id = tokenizer.token_to_id("")
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+model = MaximkaGPT(
+    vocab_size=tokenizer.get_vocab_size(),
+    embed_dim=512,
+    num_heads=8,
+    num_layers=6,
+    max_seq_len=64,
+    dropout=0.1
+).to(device)
 
-model = torch.load("model.pth")
+model.load_state_dict(torch.load("maximkaGPT-1.pth", map_location=device))
 model.eval()
 
 def sample_next_token(logits, temperature=1.0, top_k=100):
@@ -25,17 +29,15 @@ def sample_next_token(logits, temperature=1.0, top_k=100):
     return top_k_indices[next_token].item()
 
 def toTokens(text):
-    encoding = tokenizer.encode(text)
-    return encoding.ids
+    return tokenizer.encode(text).ids
 
 def fromTokens(ids):
     return tokenizer.decode(ids)
 
-
-def chat_with_model(model, initial_text, max_response_tokens=50, temperature=1.0, top_k=100, device='cpu'):
+def chat_with_model(model, initial_text, max_response_tokens=50, temperature=1.0, top_k=100, device=device):
     model.eval()
-    input_tokens_list = toTokens(initial_text)
-    input_tensor = torch.tensor(input_tokens_list, dtype=torch.long).unsqueeze(0).to(device)
+    input_tokens = toTokens(initial_text)
+    input_tensor = torch.tensor(input_tokens, dtype=torch.long).unsqueeze(0).to(device)
 
     for _ in range(max_response_tokens):
         if input_tensor.size(1) > model.max_seq_len:
@@ -44,12 +46,7 @@ def chat_with_model(model, initial_text, max_response_tokens=50, temperature=1.0
         with torch.no_grad():
             logits = model(input_tensor)
 
-        if logits.shape[1] == 0:
-            print("Логиты пусты! Проверьте входные данные.")
-            break
-
         last_logits = logits[:, -1, :].squeeze(0)
-
         predicted_token_id = sample_next_token(last_logits, temperature=temperature, top_k=top_k)
 
         if eos_token_id is not None and predicted_token_id == eos_token_id:
@@ -59,15 +56,10 @@ def chat_with_model(model, initial_text, max_response_tokens=50, temperature=1.0
 
     generated_tokens = input_tensor.squeeze(0).tolist()
     generated_text = fromTokens(generated_tokens)
-
     return generated_text
 
-print("Введите 'exit' для выхода")
-while True:
-    userText = input("You: ")
-    if userText.strip().lower() == "exit":
-        break
-    response = chat_with_model(model, userText, max_response_tokens=500, temperature=0.8, top_k=100)
-    print("Model:", response)
-
-#MODEL KNOWS ONLY RUSSIAN
+if __name__ == "__main__":
+    while True:
+        userText = input("You: ")
+        response = chat_with_model(model, userText, max_response_tokens=500, temperature=0.8, top_k=100)
+        print("Model:", response)
