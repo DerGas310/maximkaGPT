@@ -50,6 +50,7 @@ class TextDataset(Dataset):
         y = self.tokenized_text[idx + 1:idx + self.seq_len + 1]
         return torch.tensor(x, dtype=torch.long), torch.tensor(y, dtype=torch.long)
 
+
 if __name__ == "__main__":
     seq_len = 64
     batch_size = 32
@@ -60,11 +61,13 @@ if __name__ == "__main__":
     learning_rate = 1e-4
 
 
+
     with open("dataset.txt", "r", encoding="utf-8") as f:
         raw_text = f.read()
 
     tokenized_text = tokenizer.encode(raw_text).ids
     print(f"Tokenized text size: {len(tokenized_text)}")
+
 
     dataset = TextDataset(tokenized_text, seq_len, eos_token_id=eos_token_id)
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
@@ -101,6 +104,7 @@ if __name__ == "__main__":
             loss.backward()
             optimizer.step()
 
+
             total_loss += loss.item()
 
             if batch_idx % 10 == 0:
@@ -108,5 +112,6 @@ if __name__ == "__main__":
 
         avg_loss = total_loss / len(dataloader)
         print(f"Epoch {epoch + 1} end, avg loss: {avg_loss:.4f}")
+
 
     torch.save(model.state_dict(), "maximkaGPT-1.pth")
