@@ -10,7 +10,7 @@ eos_token_id = tokenizer.token_to_id(eos_token)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 model = MaximkaGPT(
-    vocab_size=tokenizer.get_vocab_size(),
+    vocab_size=34927,
     embed_dim=512,
     num_heads=8,
     num_layers=6,

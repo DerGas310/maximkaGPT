@@ -6,12 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="d086fd52-8323-4556-8a3a-0de87516f5c6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/chat.py" beforeDir="false" afterPath="$PROJECT_DIR$/chat.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/clear.py" beforeDir="false" afterPath="$PROJECT_DIR$/clear.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dataset.txt" beforeDir="false" afterPath="$PROJECT_DIR$/dataset.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/txttokenizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/txttokenizer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tokenizer/merges.txt" beforeDir="false" afterPath="$PROJECT_DIR$/tokenizer/merges.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tokenizer/vocab.json" beforeDir="false" afterPath="$PROJECT_DIR$/tokenizer/vocab.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
