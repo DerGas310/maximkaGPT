@@ -1,4 +1,4 @@
 # created by virtualenv automatically
-.venv
+.venv/
 
-maximkaGPT-1.pth
+*.pth
