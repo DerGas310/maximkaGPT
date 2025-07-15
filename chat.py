@@ -6,16 +6,16 @@ from main import MaximkaGPT
 tokenizer = ByteLevelBPETokenizer("tokenizer/vocab.json", "tokenizer/merges.txt")
 eos_token = "/"
 eos_token_id = tokenizer.token_to_id(eos_token)
-
+print(eos_token_id)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 model = MaximkaGPT(
-    vocab_size=34927,
-    embed_dim=512,
-    num_heads=8,
-    num_layers=6,
+    vocab_size=34969,
+    embed_dim=192,
+    num_heads=6,
+    num_layers=4,
     max_seq_len=64,
-    dropout=0.1
+    dropout=0
 ).to(device)
 
 model.load_state_dict(torch.load("maximkaGPT-1.pth", map_location=device))
@@ -61,5 +61,5 @@ def chat_with_model(model, initial_text, max_response_tokens=50, temperature=1.0
 if __name__ == "__main__":
     while True:
         userText = input("You: ")
-        response = chat_with_model(model, userText, max_response_tokens=500, temperature=0.9, top_k=100)
+        response = chat_with_model(model, userText, max_response_tokens=1000, temperature=0.6, top_k=100)
         print("Model:", response)

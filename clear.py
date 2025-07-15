@@ -1,6 +1,6 @@
 import re
 
-only_numbers_pattern = re.compile(r'^[-.ХМIVXLCDM1234567890\s]+$')
+only_numbers_pattern = re.compile(r'^[-#*.ХМIVXLCDM1234567890\s]+$')
 
 def remove_lines_with_only_numerals(input_file, output_file):
     with open(input_file, 'r', encoding='utf-8') as f_in:
@@ -35,4 +35,4 @@ intermediate_path = 'dataset.txt'
 output_path = 'dataset.txt'
 
 remove_lines_with_only_numerals(input_path, intermediate_path)
-remove_empty_lines_in_range(intermediate_path, output_path, 0, 100000)
+remove_empty_lines_in_range(intermediate_path, output_path, 0, 0)
