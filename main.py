@@ -26,20 +26,13 @@ class MaximkaGPT(nn.Module):
         self.max_seq_len = max_seq_len
 
     def forward(self, x):
-        seq_len = x.size(1)
-        positions = torch.arange(seq_len, device=x.device).unsqueeze(0).expand_as(x[:, :seq_len])
-        
-        x_embedded = self.token_embedding(x) + self.position_embedding(positions)
-
-        # Создаем маску для автогрессивного моделирования
-        mask = torch.triu(torch.ones((seq_len, seq_len), device=x.device) * float('-inf'), diagonal=1)
-
-        # Передача через трансформер с маской
-        x_transformed = self.transformer(x_embedded, mask=mask)
-
-        logits = self.fc_out(x_transformed)
-
-        return logits
+      seq_len = x.size(1)
+      positions = torch.arange(seq_len, device=x.device).unsqueeze(0).expand_as(x[:, :seq_len])
+      x_embedded = self.token_embedding(x) + self.position_embedding(positions)
+      mask = torch.triu(torch.ones((seq_len, seq_len), device=x.device), diagonal=1).bool()
+      x_transformed = self.transformer(x_embedded, mask=mask)
+      logits = self.fc_out(x_transformed)
+      return logits
 
 
 class TextDataset(Dataset):
@@ -61,12 +54,12 @@ class TextDataset(Dataset):
 
 
 if __name__ == "__main__":
-    seq_len = 64
+    seq_len = 128
     batch_size = 32
-    embed_dim = 256
-    num_heads = 8
-    num_layers = 4
-    num_epochs = 10
+    embed_dim = 192
+    num_heads = 6
+    num_layers = 3
+    num_epochs = 15
     learning_rate = 1e-4
     dropout_number = 0.2
 

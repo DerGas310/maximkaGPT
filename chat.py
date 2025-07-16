@@ -13,8 +13,8 @@ model = MaximkaGPT(
     vocab_size=34969,
     embed_dim=192,
     num_heads=6,
-    num_layers=4,
-    max_seq_len=64,
+    num_layers=3,
+    max_seq_len=128,
     dropout=0
 ).to(device)
 
@@ -61,5 +61,5 @@ def chat_with_model(model, initial_text, max_response_tokens=50, temperature=1.0
 if __name__ == "__main__":
     while True:
         userText = input("You: ")
-        response = chat_with_model(model, userText, max_response_tokens=1000, temperature=0.6, top_k=100)
+        response = chat_with_model(model, userText, max_response_tokens=1000, temperature=0.2, top_k=100)
         print("Model:", response)
